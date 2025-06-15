@@ -86,7 +86,7 @@
 
 <div class="mobile-screen" id="mobile-screen">
   <div style="padding: 2rem; max-width: 400px;">
-    <h2>Welcome to R N Sahay and Sons LLP's Client Portal_new</h2>
+    <h2>Welcome to R N Sahay and Sons LLP's Client Portal_new1</h2>
     <p>Please enter your UID and Password to continue:</p>
     <input type="text" id="uid-input" placeholder="Enter UID" style="padding: 0.75rem; width: 100%; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 8px;" />
     <input type="password" id="password-input" placeholder="Enter Password" style="padding: 0.75rem; width: 100%; border: 1px solid #ccc; border-radius: 8px;" />
@@ -131,42 +131,38 @@
   let password = "";
 
   async function login() {
-    uid = document.getElementById('uid-input').value.trim();
-    password = document.getElementById('password-input').value.trim();
+  uid = document.getElementById('uid-input').value.trim();
+  password = document.getElementById('password-input').value.trim();
 
-    if (!uid || !password) {
-      alert("Please enter both UID and Password.");
-      return;
-    }
-
-    try {
-      const response = await fetch("https://n8n.srv850749.hstgr.cloud/webhook/7db48391-5bd0-417a-b201-97c450a08094", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ uid, password })
-      });
-
-      if (!response.ok) {
-        alert("Server error: " + response.status);
-        return;
-      }
-
-      const data = await response.json();
-
-      if (data.success) {
-        clientName = data.clientName || "Client";
-        document.getElementById("mobile-screen").style.display = "none";
-        document.getElementById("chat-container").style.display = "flex";
-        document.getElementById("welcome-client").innerText = `Welcome, ${clientName}`;
-      } else {
-        alert("Incorrect UID or Password. Please try again.");
-      }
-
-    } catch (error) {
-      alert("Login failed. Please check your internet connection or try again later.");
-      console.error("Login error:", error);
-    }
+  if (!uid || !password) {
+    alert("Please enter both UID and Password.");
+    return;
   }
+
+  try {
+    const response = await fetch("https://n8n.srv850749.hstgr.cloud/webhook/7db48391-5bd0-417a-b201-97c450a08094", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ uid, password })
+    });
+
+    const outerData = await response.json();
+    const data = outerData.response?.body || {}; // ✅ get the correct nested structure
+
+    if (data.success) {
+      clientName = data.clientName || "Client";
+      document.getElementById("mobile-screen").style.display = "none";
+      document.getElementById("chat-container").style.display = "flex";
+      document.getElementById("welcome-client").innerText = `Welcome, ${clientName}`;
+    } else {
+      alert("Incorrect UID or Password. Please try again.");
+    }
+
+  } catch (error) {
+    alert("Login failed. Please check your internet connection or try again later.");
+    console.error("Login error:", error);
+  }
+}
 
   function appendMessage(text, className) {
     const chatBox = document.getElementById('chat-box');
