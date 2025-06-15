@@ -86,7 +86,7 @@
 
 <div class="mobile-screen" id="mobile-screen">
   <div style="padding: 2rem; max-width: 400px;">
-    <h2>Welcome to R N Sahay and Sons LLP's Client Portal</h2>
+    <h2>Welcome to R N Sahay and Sons LLP's Client Portal_new</h2>
     <p>Please enter your UID and Password to continue:</p>
     <input type="text" id="uid-input" placeholder="Enter UID" style="padding: 0.75rem; width: 100%; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 8px;" />
     <input type="password" id="password-input" placeholder="Enter Password" style="padding: 0.75rem; width: 100%; border: 1px solid #ccc; border-radius: 8px;" />
@@ -101,8 +101,16 @@
       <img src="Logo.png" alt="Logo" />
       <strong>AI Client Manager</strong>
     </div>
-    <div id="welcome-client" style="font-size: 0.9rem;">Welcome</div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <a href="tel:+919059052604" title="Call Us">
+        <img src="https://img.icons8.com/ios-filled/24/000000/phone.png" alt="Call" style="height: 22px; cursor: pointer;" />
+      </a>
+      <a href="mailto:rnsahayandsons@gmail.com" title="Email Us">
+        <img src="https://img.icons8.com/ios-filled/24/000000/new-post.png" alt="Mail" style="height: 22px; cursor: pointer;" />
+      </a>
+    </div>
   </div>
+
   <div class="chat-box" id="chat-box"></div>
   <div class="input-box">
     <input type="text" id="user-input" placeholder="Type your message..." onkeypress="handleKey(event)" />
@@ -164,7 +172,13 @@
     const chatBox = document.getElementById('chat-box');
     const div = document.createElement('div');
     div.className = `message ${className}`;
-    div.innerHTML = text;
+
+    if (className === 'bot-message') {
+      div.innerHTML = text; // keep HTML (already formatted)
+    } else {
+      div.innerHTML = convertLinks(text); // convert plain URLs
+    }
+
     chatBox.appendChild(div);
     chatBox.scrollTop = chatBox.scrollHeight;
   }
@@ -197,6 +211,11 @@
     if (indicator) indicator.remove();
   }
 
+  function convertLinks(text) {
+    return text.replace(/(https?:\/\/[^\s<>"']+)/g,
+      '<a href="$1" target="_blank" style="color:#0b5394; text-decoration: underline;">$1</a>');
+  }
+
   async function sendToWebhook(message) {
     try {
       showTypingIndicator();
@@ -217,6 +236,7 @@
         appendMessage('Sorry, something went wrong.', 'bot-message');
       }
     } catch (err) {
+      console.error("Webhook Error:", err);
       removeTypingIndicator();
       appendMessage('Error connecting to the server. Please try again later.', 'bot-message');
     }
